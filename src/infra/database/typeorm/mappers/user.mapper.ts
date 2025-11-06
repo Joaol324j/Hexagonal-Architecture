@@ -1,9 +1,13 @@
 import { User } from '../../../../app/entities/user.entity.js';
 import { UserModel } from '../models/user.model.js';
+import { Email } from '../../../../app/entities/value-objects/email.vo.js';
+import { Password } from '../../../../app/entities/value-objects/password.vo.js';
+import { UniqueId } from '../../../../app/entities/value-objects/unique-id.vo.js';
 
 export class UserMapper {
 	static toPersistence(user: User): UserModel {
 		const userModel = new UserModel();
+
 		userModel.id = user.id;
 		userModel.name = user.name;
 		userModel.email = user.email;
@@ -16,13 +20,19 @@ export class UserMapper {
 	}
 
 	static toDomain(userModel: UserModel): User {
+		const emailVO = Email.create(userModel.email);
+		const passwordVO = Password.reconstitute(userModel.password_hash);
+		const idVO = UniqueId.create(userModel.id);
+
+		const userProps = {
+			name: userModel.name,
+			email: emailVO,
+			password: passwordVO,
+		};
+
 		return User.reconstitute(
-			{
-				name: userModel.name,
-				email: userModel.email,
-				password: userModel.password_hash,
-			},
-			userModel.id,
+			userProps,
+			idVO,
 			userModel.created_at,
 			userModel.updated_at,
 			userModel.deleted_at,

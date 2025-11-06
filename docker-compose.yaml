@@ -1,0 +1,38 @@
+services:
+  api:
+    build: .
+    container_name: hexagonal_api
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    command: npm run dev
+
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=hexagonal_api
+      - DB_USER=docker
+      - DB_PASS=docker
+
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=hexagonal_api
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
