@@ -60,6 +60,31 @@ export class User {
 		return new User(props, id, created_at, updated_at, deleted_at);
 	}
 
+	public update(props: { name: string; email: string }): void {
+		if (props.name.length < 3) {
+			throw new Error('Name is too short');
+		}
+
+		this.props.name = props.name;
+		this.props.email = Email.create(props.email);
+		this._updated_at = new Date();
+	}
+
+	public delete(): void {
+		if (this._deleted_at) {
+			return;
+		}
+		this._deleted_at = new Date();
+	}
+
+	public restore(): void {
+		if (!this._deleted_at) {
+			return;
+		}
+		this._deleted_at = null;
+		this._updated_at = new Date();
+	}
+
 	public get id(): string {
 		return this._id.value;
 	}

@@ -1,12 +1,14 @@
 import fastify from 'fastify';
 import { ZodError } from 'zod';
 import { userRoutes } from './routes/user.routes.js';
+import { authRoutes } from './routes/auth.routes.js';
 
 const app = fastify({
 	logger: true,
 });
 
 app.register(userRoutes);
+app.register(authRoutes);
 
 app.setErrorHandler((error, _request, reply) => {
 	if (error instanceof ZodError) {

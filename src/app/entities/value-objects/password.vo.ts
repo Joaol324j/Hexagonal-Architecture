@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { hash } from 'bcrypt';
 
 export class Password {
@@ -5,6 +6,10 @@ export class Password {
 
 	private constructor(value: string) {
 		this._value = value;
+	}
+
+	public async compare(plainText: string): Promise<boolean> {
+		return bcrypt.compare(plainText, this._value);
 	}
 
 	public get value(): string {
